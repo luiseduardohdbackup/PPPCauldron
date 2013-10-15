@@ -1,8 +1,10 @@
 local storyboard = require("storyboard")
 local physics = require "physics"
 local widget = require( "widget" )
-local levelicon = require("Components.levelIcon")
+local levelicon = require("LevelIcon")
+local levelSprites = require("levelSprites")
 
+local levels = graphics.newImageSheet( "Images/levelSprite.png", levelSprites:getSheet() )
 local scene = storyboard.newScene()
 
 audio.setVolume( 0.5, { channel = 1 } ) -- Sound Effects Channel Volume
@@ -35,6 +37,11 @@ function onInputdeviceStatusChanged( event )
     
 end
 
+function selected( event )
+    if event.phase == "began" then
+        print( event.target.name )
+    end
+end
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
     local group = self.view
@@ -78,25 +85,27 @@ function scene:willEnterScene( event )
     end
     
     -- Setup the main display components
-    local background = display.newImage( "Images/menuBackground" )
+    --local background = display.newImage( "Images/menuBackground" )
     local scroller =    widget.newScrollView
                                  {
                                     top = 100,
                                     left = 10,
-                                    width = 300,
+                                    width = 600,
                                     height = 350,
                                     scrollWidth = 2000,
                                     scrollHeight = 670,
+                                    hideBackground = true,
                                     listener = scrollListener,
                                 }
                                 
     for i = 1, 10 do
-        local level1 = levelicon:new()
+        local level1 = levelicon:new( nil, "", levels, levelSprites )
         level1.level.width = 100
         level1.level.height = 120
         level1.level.x = 110 * ( i - 1 )
-        
-            scroller:insert( level1.level )
+        level1.backgroundImage.name = "area" .. i
+        level1.backgroundImage:addEventListener( "touch", selected )
+        scroller:insert( level1.level )
     end
     
 

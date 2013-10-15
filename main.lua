@@ -9,10 +9,8 @@ local options =
     params = { var1 = "custom", myVar = "another" }
 }
 
-introComplete = function( event )
+--introComplete = function( event )
     storyboard.gotoScene("Scenes.MainMenu", options )
-end
+--end
 
-media.playVideo( "Video/Ladybird.mp4", false, introComplete )
-
-
+--media.playVideo( "Video/Ladybird.mp4", false, introComplete )

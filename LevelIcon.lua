@@ -1,31 +1,32 @@
-local levelSprites = require("levelSprites")
+
 
 local levelIcon = {}
-local levels = graphics.newImageSheet( "levelSprites.png", sheetInfo:getSheet() )
 
-function levelIcon:new( _p, imageName )
+
+function levelIcon:new( _p, imageName, imageSheet, data )
     _p = _p or {}
     setmetatable( _p, self )
     
     self.__index = self
+    _p.name = ""
     
     _p.background = display.newGroup()
     _p.icon = display.newGroup()
     _p.label = display.newGroup()
     
-    _p.backgroundImage = display.newSprite( level, {frames = { level:getFrameIndex( imageName.."background")}} )    
-    _p.iconImage = display.newSprite( level, {frames = { level:getFrameIndex( imageName.."Animation")}} )
+    _p.backgroundImage = display.newSprite( imageSheet, {frames = { data:getFrameIndex( "background")}} )    
+   -- _p.iconImage = display.newSprite( levels, {frames = { levelSprites:getFrameIndex( imageName.."Animation")}} )
   
     _p.background:insert( _p.backgroundImage )
-    _p.icon:insert( _p.iconImage )
-    _p.label:insert( _p.labelText )
+    --_p.icon:insert( _p.iconImage )
+   -- _p.label:insert( _p.labelText )
     
     _p.level = display.newGroup( )
     
     _p.level:insert( _p.background )
-    _p.level:insert( _p.icon )
-    _p.level:insert( _p.label )
-    
+    --_p.level:insert( _p.icon )
+   -- _p.level:insert( _p.label )
+
     return _p
 end
 
