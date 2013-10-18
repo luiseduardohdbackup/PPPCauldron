@@ -113,13 +113,17 @@ function scene:willEnterScene( event )
                                 }
                                 
     for i = 1, 10 do
-        local level1 = levelicon:new( nil, "", levels, levelSprites )
-        level1.level.width = 200
-        level1.level.height = 220
+        local level1 = levelicon:new( nil, { 
+                                    name = "", 
+                                    imageSheet = levels, 
+                                    data = levelSprites, 
+                                    width = 200, 
+                                    height = 220, 
+                                    name = "area" .. i, 
+                                    active = false, 
+                                    onSelect = selected } )
         level1.level.x = 210 * ( i - 1 )
         level1.level.y = 0;
-        level1.backgroundImage.name = "area" .. i
-        level1.backgroundImage:addEventListener( "touch", selected )
         scrollView:insert( level1.level )
     end
     

@@ -10,7 +10,7 @@ local options =
 }
 
 --introComplete = function( event )
-    storyboard.gotoScene("Scenes.MainMenu", options )
+    storyboard.gotoScene("Scenes.TitleScene", options )
 --end
 
 --media.playVideo( "Video/Ladybird.mp4", false, introComplete )

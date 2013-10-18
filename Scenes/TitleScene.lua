@@ -1,5 +1,6 @@
 local storyboard = require("storyboard")
 local physics = require "physics"
+local widget = require("widget")
 
 local scene = storyboard.newScene()
 
@@ -24,7 +25,7 @@ local title
 local background
 
 local playButton
-local quitButton
+local exitButton
 local infoButton
 
 -- local forward references should go here --
@@ -42,9 +43,9 @@ function onInputdeviceStatusChanged( event )
 end
 
 function enableUI( event )
-    playButton:addEventListener("press", playPressed )
-    infoButton:addEventListener("press", infoPressed )
-    quitButton:addEventListener("press", quitPressed )
+    playButton:addEventListener("touch", playPressed )
+    infoButton:addEventListener("touch", infoPressed )
+    exitButton:addEventListener("touch", exitPressed )
 end
 
 
@@ -53,15 +54,15 @@ function scene:createScene( event )
     local group = self.view
     
     -- 1. Create rendering layers (group)
-    local background = display.newImage( Images .. "titleBackground.png" )
-    local title = display.newImageRect(  Images .. "title.png", 200, 200 )
+    --local background = display.newImage( Images .. "titleBackground.png" )
+    --local title = display.newImageRect(  Images .. "title.png", 200, 200 )
     
     -- Center the title on the screen
-    title.x = centerX - ( title.width / 2 ) 
-    title.y = -210
+   -- title.x = centerX - ( title.width / 2 ) 
+    --title.y = -210
     
-    group:insert( background )
-    group:insert( title )
+    --group:insert( background )
+    --group:insert( title )
 end
 
 -- Called BEFORE scene has moved onscreen:
@@ -90,6 +91,41 @@ function scene:willEnterScene( event )
         end    
     end
     
+    background = display.newImage( Images .. "background.png" )
+    
+    playButton = widget.newButton
+                            {
+                                left = math.abs( display.viewableContentWidth / 2 ),
+                                top = math.abs( display.viewableContentHeight * 0.2) * 1, 
+                                defaultFile = Images .. "levelSprite.png",
+                                overFile = Images .. "levelSprite.png",
+                                width = math.abs( display.contentWidth * 0.5 ),
+                                height = math.abs( display.viewableContentHeight * 0.2 )
+                            }
+                            
+    infoButton = widget.newButton
+                            {
+                                left = math.abs( display.viewableContentWidth / 2 ),
+                                top = math.abs( display.viewableContentHeight * 0.2) * 2, 
+                                defaultFile = Images .. "levelSprite.png",
+                                overFile = Images .. "levelSprite.png",
+                                width = math.abs( display.contentWidth * 0.5 ),
+                                height = math.abs( display.viewableContentHeight * 0.2 )
+                            }
+                            
+    exitButton = widget.newButton
+                            {
+                                left = math.abs( display.viewableContentWidth / 2 ),
+                                top = math.abs( display.viewableContentHeight * 0.2) * 3, 
+                                defaultFile = Images .. "levelSprite.png",
+                                overFile = Images .. "levelSprite.png",
+                                width = math.abs( display.contentWidth * 0.5 ),
+                                height = math.abs( display.viewableContentHeight * 0.2 )
+                            }
+                   
+                   group:insert ( playButton )
+                   group:insert( infoButton )
+                   group:insert( exitButton )
 end
 
 
@@ -97,7 +133,7 @@ end
 function scene:enterScene( event )
     local group = self.view
     
-    transition.to(title, { time = 1000, y = 300, onComplete = enableUI })
+    --transition.to(title, { time = 1000, y = 300, onComplete = enableUI })
 end
 
 

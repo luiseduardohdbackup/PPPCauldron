@@ -1,35 +1,27 @@
-
-
 local levelIcon = {}
 
-
-function levelIcon:new( _p, imageName, imageSheet, data )
+function levelIcon:new( _p, info )
     _p = _p or {}
     setmetatable( _p, self )
     
     self.__index = self
-    _p.name = ""
     
-    _p.background = display.newGroup()
     _p.icon = display.newGroup()
-    _p.label = display.newGroup()
     
-    _p.backgroundImage = display.newSprite( imageSheet, {frames = { data:getFrameIndex( "background")}} )    
-    _p.iconImage = display.newSprite( imageSheet, {frames = { data:getFrameIndex( "background")}} )
+    _p.backgroundImage = display.newSprite( info.imageSheet, {frames = { info.data:getFrameIndex( "background")}} )
+    _p.iconImage = display.newSprite( info.imageSheet, {frames = { info.data:getFrameIndex( "background")}} )
   
-    _p.background:insert( _p.backgroundImage )
+    _p.icon:insert( _p.backgroundImage )
     _p.icon:insert( _p.iconImage )
-   -- _p.label:insert( _p.labelText )
+   -- _p.icon:insert( _p.labelText )
     
-    _p.level = display.newContainer( display.contentWidth, 100 )
+    _p.level = display.newContainer( info.width, info.height )
     _p.level.anchorChildren = true
     
-    _p.level:insert( _p.background )
     _p.level:insert( _p.icon )
-   -- _p.level:insert( _p.label )
 
     return _p
-end
+end 
 
 --[[ setbackground
         Set the background image for this level selector. If the background is already set then
@@ -41,14 +33,23 @@ end
         ]]
 function levelIcon:setBackground( image, width, height )
     
+    -- Remove the current background image and delete it but, we also need to remove all
+    -- of the other icon elements to preserve ordering.
     if self.backgroundImage ~= nil then
-        self.background:remove( self.backgroundImage )
+        self.icon:remove( self.iconImage )
+        self.icon:remove( self.backgroundImage )
+        self.icon:remove( self.labelText )
+        
         self.backgroundImage = nil;
     end
     
-   self.backgroundImage = display.newImage( "Images/" .. image )
+    -- Set the new image
+    self.backgroundImage = display.newImage( "Images/" .. image )
 
-    self.background:insert( self.background ) 
+    -- Recreate the icon with the new image background
+    self.icon:insert( self.background ) 
+    self.icon:insert( self.iconImage )
+    self.icon:insert( self.labelText )
 end
 
 --[[
