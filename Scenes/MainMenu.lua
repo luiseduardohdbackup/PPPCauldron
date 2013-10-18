@@ -18,6 +18,7 @@ local h = display.contentHeight
 local centerX = display.contentCenterX
 local centerY = display.contentCenterY
 
+local scrollView
 -- input controller commands and listeners
 local inputDevices = system.getInputDevices()
 local controllers = {}
@@ -40,8 +41,21 @@ end
 function selected( event )
     if event.phase == "began" then
         print( event.target.name )
+    elseif  event.phase == "moved" then
+        local dy = math.abs( ( event.y - event.yStart ) )
+
+        -- If our finger has moved more than the desired range
+        if dy > 5 then
+            -- Pass the focus back to the scrollView
+            scrollView:takeFocus( event )
+        end
+    elseif event.phase == "ended" then
+        
     end
+    
+    return true
 end
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
     local group = self.view
@@ -86,30 +100,31 @@ function scene:willEnterScene( event )
     
     -- Setup the main display components
     --local background = display.newImage( "Images/menuBackground" )
-    local scroller =    widget.newScrollView
+    scrollView =    widget.newScrollView
                                  {
                                     top = 100,
                                     left = 10,
-                                    width = 600,
-                                    height = 350,
+                                    width = 320,
+                                    height = 480,
                                     scrollWidth = 2000,
-                                    scrollHeight = 670,
+                                    scrollHeight = 400,
                                     hideBackground = true,
                                     listener = scrollListener,
                                 }
                                 
     for i = 1, 10 do
         local level1 = levelicon:new( nil, "", levels, levelSprites )
-        level1.level.width = 100
-        level1.level.height = 120
-        level1.level.x = 110 * ( i - 1 )
+        level1.level.width = 200
+        level1.level.height = 220
+        level1.level.x = 210 * ( i - 1 )
+        level1.level.y = 0;
         level1.backgroundImage.name = "area" .. i
         level1.backgroundImage:addEventListener( "touch", selected )
-        scroller:insert( level1.level )
+        scrollView:insert( level1.level )
     end
     
 
-    group:insert( scroller )
+    group:insert( scrollView )
 end
 
 

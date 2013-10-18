@@ -15,16 +15,17 @@ function levelIcon:new( _p, imageName, imageSheet, data )
     _p.label = display.newGroup()
     
     _p.backgroundImage = display.newSprite( imageSheet, {frames = { data:getFrameIndex( "background")}} )    
-   -- _p.iconImage = display.newSprite( levels, {frames = { levelSprites:getFrameIndex( imageName.."Animation")}} )
+    _p.iconImage = display.newSprite( imageSheet, {frames = { data:getFrameIndex( "background")}} )
   
     _p.background:insert( _p.backgroundImage )
-    --_p.icon:insert( _p.iconImage )
+    _p.icon:insert( _p.iconImage )
    -- _p.label:insert( _p.labelText )
     
-    _p.level = display.newGroup( )
+    _p.level = display.newContainer( display.contentWidth, 100 )
+    _p.level.anchorChildren = true
     
     _p.level:insert( _p.background )
-    --_p.level:insert( _p.icon )
+    _p.level:insert( _p.icon )
    -- _p.level:insert( _p.label )
 
     return _p
