@@ -1,5 +1,7 @@
 module(..., package.seeall )
 
+local point2D = require("Projection.Point2D")
+
 local Screen = {}
 
 --[[
@@ -10,8 +12,8 @@ function Screen:new( _p, argTable )
     setmetatable( _p, self )
     self.__index = self
 
-    _p.center = point2D.new( nil, { display.contentCenterX, display.contentCenterY } )
-    _p.size = point2D.new( nil, { display.contentWidth, display.contentHeight } )
+    _p.center = point2D:new( nil, { display.contentCenterX, display.contentCenterY } )
+    _p.size = point2D:new( nil, { display.contentWidth, display.contentHeight } )
 
     return _p
 end 

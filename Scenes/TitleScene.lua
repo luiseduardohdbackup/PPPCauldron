@@ -5,6 +5,8 @@ local widget = require("widget")
 local levelSprites = require("levelSprites")
 local scene = storyboard.newScene()
 
+local projection = require("Projection.Projection")
+
 -- file locations
 local Images = "Images/"
 local sounds = "Audio/"
@@ -127,15 +129,12 @@ function scene:willEnterScene( event )
                                 height = math.abs( display.viewableContentHeight * 0.2 )
                             }
                    
-                   --group:insert ( playButton )
-                   --group:insert( infoButton )
-                   --group:insert( exitButton )]]
-                   
-                   local box = display.newImage("Images/levelSprite.png", 0 + ( display.contentWidth / 2 ), 0 + (display.contentHeight / 2 ))
-                   local box2 = display.newImage("Images/levelSprite.png", 0 + ( display.contentWidth / 2 ), 0 + (display.contentHeight / 2 ))
-                   
-                   
-                  group:insert( box )
+    --group:insert ( playButton )
+    --group:insert( infoButton )
+    --group:insert( exitButton )]]
+
+    local proj = projection:new()
+    
 end
 
 

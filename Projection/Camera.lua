@@ -12,9 +12,9 @@ function Camera:new( _p, argTable )
     setmetatable( _p, self )
     self.__index = self
     
-    _p.to           = point3D.new( nil, {x=0, y=50, z=0} )
-    _p.from      = point3D.new( nil, { x = 0, y = -50, z = 0 } )
-    _p.up          = point3D.new( nil, { x = 0, y = 0, z = 1} )
+    _p.to           = point3D:new( nil, {x=0, y=50, z=0} )
+    _p.from      = point3D:new( nil, { x = 0, y = -50, z = 0 } )
+    _p.up          = point3D:new( nil, { x = 0, y = 0, z = 1} )
     _p.angleh = 45.0
     _p.anglev = 45.0
     _p.zoom = 1.0

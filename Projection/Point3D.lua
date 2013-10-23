@@ -9,10 +9,16 @@ function Point3D:new( _p, argTable )
     
     self.__index = self
 
-    _p.x = argTable.x or 0
-    _p.y = argTable.y or 0
-    _p.z = argTable.z or 0
-    
+    if argTable then
+        _p.x = argTable.x
+        _p.y = argTable.y
+        _p.z = argTable.z
+    else
+        _p.x = 0
+        _p.y = 0
+        _p.z = 0
+    end
+        
     return _p
 end 
 

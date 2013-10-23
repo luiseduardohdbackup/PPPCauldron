@@ -11,8 +11,13 @@ function Point2D:new( _p, argTable )
     
     self.__index = self
 
-    _p.x = argTable.x or 0
-    _p.y = argTable.y or 0
+    if argTable then
+        _p.x = argTable.x
+        _p.y = argTable.y
+    else
+        _p.x = 0
+        _p.y = 0
+    end
     
     return _p
 end 
