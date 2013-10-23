@@ -2,6 +2,7 @@ local storyboard = require("storyboard")
 local physics = require "physics"
 local widget = require("widget")
 
+local levelSprites = require("levelSprites")
 local scene = storyboard.newScene()
 
 -- file locations
@@ -22,7 +23,7 @@ local controllers = {}
 
 -- graphics and buttons
 local title
-local background
+local spriteSheet 
 
 local playButton
 local exitButton
@@ -91,41 +92,50 @@ function scene:willEnterScene( event )
         end    
     end
     
-    background = display.newImage( Images .. "background.png" )
+    spriteSheet = graphics.newImageSheet( "levelSprites.png", levelSprites:getSheet() )
     
-    playButton = widget.newButton
+   --[[] playButton = widget.newButton
                             {
+                                sheet = spriteSheet,
                                 left = math.abs( display.viewableContentWidth / 2 ),
                                 top = math.abs( display.viewableContentHeight * 0.2) * 1, 
-                                defaultFile = Images .. "levelSprite.png",
-                                overFile = Images .. "levelSprite.png",
+                                defaultFrame = levelSprites:getFrameIndex("background"),
+                                overFrame = levelSprites:getFrameIndex("background"),
                                 width = math.abs( display.contentWidth * 0.5 ),
                                 height = math.abs( display.viewableContentHeight * 0.2 )
                             }
                             
     infoButton = widget.newButton
                             {
+                                sheet = spriteSheet,
                                 left = math.abs( display.viewableContentWidth / 2 ),
                                 top = math.abs( display.viewableContentHeight * 0.2) * 2, 
-                                defaultFile = Images .. "levelSprite.png",
-                                overFile = Images .. "levelSprite.png",
+                                defaultFrame = levelSprites:getFrameIndex("background"),
+                                overFrame = levelSprites:getFrameIndex("background"),
                                 width = math.abs( display.contentWidth * 0.5 ),
                                 height = math.abs( display.viewableContentHeight * 0.2 )
                             }
                             
     exitButton = widget.newButton
                             {
+                                sheet = spriteSheet,
                                 left = math.abs( display.viewableContentWidth / 2 ),
                                 top = math.abs( display.viewableContentHeight * 0.2) * 3, 
-                                defaultFile = Images .. "levelSprite.png",
-                                overFile = Images .. "levelSprite.png",
+                                defaultFrame = levelSprites:getFrameIndex("background"),
+                                overFrame = levelSprites:getFrameIndex("background"),
                                 width = math.abs( display.contentWidth * 0.5 ),
                                 height = math.abs( display.viewableContentHeight * 0.2 )
                             }
                    
-                   group:insert ( playButton )
-                   group:insert( infoButton )
-                   group:insert( exitButton )
+                   --group:insert ( playButton )
+                   --group:insert( infoButton )
+                   --group:insert( exitButton )]]
+                   
+                   local box = display.newImage("Images/levelSprite.png", 0 + ( display.contentWidth / 2 ), 0 + (display.contentHeight / 2 ))
+                   local box2 = display.newImage("Images/levelSprite.png", 0 + ( display.contentWidth / 2 ), 0 + (display.contentHeight / 2 ))
+                   
+                   
+                  group:insert( box )
 end
 
 

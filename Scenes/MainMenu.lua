@@ -4,7 +4,7 @@ local widget = require( "widget" )
 local levelicon = require("LevelIcon")
 local levelSprites = require("levelSprites")
 
-local levels = graphics.newImageSheet( "Images/levelSprite.png", levelSprites:getSheet() )
+local levels = graphics.newImageSheet( "levelSprites.png", levelSprites:getSheet() )
 local scene = storyboard.newScene()
 
 audio.setVolume( 0.5, { channel = 1 } ) -- Sound Effects Channel Volume
