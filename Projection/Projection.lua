@@ -17,6 +17,8 @@ function Projection:new( _p, argTable )
     
     self.__index = self
 
+    _p.tanthetah = 0
+    _p.tanthetav = 0
     _p.EPSILON = 0.001;
     _p.DTOR = 0.01745329252;
     _p.camera = camera:new()
@@ -25,6 +27,7 @@ function Projection:new( _p, argTable )
     _p.basisa = point3D:new()
     _p.basisb = point3D:new()
     _p.basisc = point3D:new()
+    
     _p.p1 = point2D:new()
     _p.p2 = point2D:new()
 
@@ -43,46 +46,46 @@ end
         ]]
 function Projection:trans_Initialise(  )
     -- Is the camera position and view vector coincident ?
-    if EqualVertex(camera.to, camera.from) then
+    if EqualVertex(self.camera.to, self.camera.from) then
                return false;
     end 
     
     -- Is there a legal camera up vector ? 
-    if EqualVertex(camera.up, origin) then
+    if EqualVertex( self.camera.up, self.origin ) then
         return false;
     end
 
-    basisb.x = camera.to.x - camera.from.x
-    basisb.y = camera.to.y - camera.from.y
-    basisb.z = camera.to.z - camera.from.z
-    Normalise(basisb)
+    self.basisb.x = self.camera.to.x - self.camera.from.x
+    self.basisb.y = self.camera.to.y - self.camera.from.y
+    self.basisb.z = self.camera.to.z - self.camera.from.z
+    self.Normalise(basisb)
 
-    basisa= CrossProduct(camera.up, basisb)
-    Normalise(basisa)
+    self.basisa= CrossProduct( self.camera.up, self.basisb )
+    Normalise( self.basisa )
 
     -- Are the up vector and view direction colinear 
-    if EqualVertex(basisa, origin) then
+    if EqualVertex( self.basisa, self.origin) then
         return false;
     end
 
-    basisc=CrossProduct(basisb, basisa);
+    self.basisc = CrossProduct( self.basisb, self.basisa );
 
     -- Do we have legal camera apertures ? 
-    if camera.angleh < EPSILON or camera.anglev < EPSILON then
+    if self.camera.angleh < self.EPSILON or self.camera.anglev < self.EPSILON then
         return false;
     end
 
     -- Calculate camera aperture statics, note: angles in degrees 
-    tanthetah = math.tan(camera.angleh * DTOR / 2);
-    tanthetav = math.tan(camera.anglev * DTOR / 2);
+    self.tanthetah = math.tan( self.camera.angleh * self.DTOR / 2);
+    self.tanthetav = math.tan( self.camera.anglev * self.DTOR / 2);
 
     -- Do we have a legal camera zoom ? */
-    if camera.zoom < EPSILON then
+    if self.camera.zoom < self.EPSILON then
         return  false;
     end
 
     -- Are the clipping planes legal ? 
-    if camera.front < 0 or camera.back < 0 or camera.back <= camera.front then
+    if self.camera.front < 0 or self.camera.back < 0 or self.camera.back <= self.camera.front then
         return  false
     end
 
@@ -94,17 +97,17 @@ end
         
         @return - true or false depending on if initialisation has been successful.
         ]]
-    function Trans_World2Eye( w, e )
+    function Projection:Trans_World2Eye( w, e )
          -- Translate world so that the camera is at the origin 
-         w.x = w.x - camera.from.x;
-         w.y = w.y - camera.from.y;
-         w.z = w.z - camera.from.z;
+         w.x = w.x - self.camera.from.x;
+         w.y = w.y - self.camera.from.y;
+         w.z = w.z - self.camera.from.z;
 
          -- Convert to eye coordinates using basis vectors */
-         e.x = w.x * basisa.x + w.y * basisa.y + w.z * basisa.z;
+         e.x = w.x * self.basisa.x + w.y * self.basisa.y + w.z * self.basisa.z;
 
-         e.y = w.x * basisb.x + w.y * basisb.y + w.z * basisb.z;
-         e.z = w.x * basisc.x + w.y * basisc.y + w.z * basisc.z;
+         e.y = w.x * self.basisb.x + w.y * self.basisb.y + w.z * self.basisb.z;
+         e.z = w.x * self.basisc.x + w.y * self.basisc.y + w.z * self.basisc.z;
      end
 
     --[[ trans_Initialise
@@ -112,46 +115,46 @@ end
         
         @return - true or false depending on if initialisation has been successful.
         ]]
- function Trans_ClipEye( e1, e2)
+ function Projection:Trans_ClipEye( e1, e2)
          local mu;
 
          -- Is the vector totally in front of the front cutting plane ? */
-         if (e1.y <= camera.front and e2.y <= camera.front) then
+         if ( e1.y <= self.camera.front and e2.y <= self.camera.front) then
              return  false;
          end
 
          -- Is the vector totally behind the back cutting plane ? */
-         if (e1.y >= camera.back and e2.y >= camera.back) then
+         if ( e1.y >= self.camera.back and e2.y >= self.camera.back) then
              return  false;
          end
 
          -- Is the vector partly in front of the front cutting plane ? */
-         if ((e1.y < camera.front and e2.y > camera.front) or (e1.y > camera.front and e2.y < camera.front)) then
-             mu = (camera.front - e1.y) / (e2.y - e1.y);
+         if (( e1.y < self.camera.front and e2.y > self.camera.front) or ( e1.y > self.camera.front and e2.y < self.camera.front)) then
+             mu = ( self.camera.front - e1.y ) / ( e2.y - e1.y );
 
-             if (e1.y < camera.front) then
-                 e1.x = e1.x + mu * (e2.x - e1.x);
-                 e1.z = e1.z + mu * (e2.z - e1.z);
-                 e1.y = camera.front;
+             if ( e1.y < camera.front) then
+                 e1.x = e1.x + mu * ( e2.x - e1.x );
+                 e1.z = e1.z + mu * ( e2.z - e1.z );
+                 e1.y = self.camera.front;
              else
-                 e2.x = e1.x + mu * (e2.x - e1.x);
-                 e2.z = e1.z + mu * (e2.z - e1.z);
-                 e2.y = camera.front;
+                 e2.x = e1.x + mu * ( e2.x - e1.x );
+                 e2.z = e1.z + mu * ( e2.z - e1.z );
+                 e2.y = self.camera.front;
              end
          end
 
          -- Is the vector partly behind the back cutting plane ? */
-         if ((e1.y < camera.back and e2.y > camera.back) or (e1.y > camera.back and e2.y < camera.back)) then
-             mu = (camera.back - e1.y) / (e2.y - e1.y);
+         if (( e1.y < self.camera.back and e2.y > self.camera.back ) or ( e1.y > self.camera.back and e2.y < self.camera.back )) then
+             mu = ( self.camera.back - e1.y ) / ( e2.y - e1.y );
 
-             if (e1.y < camera.back) then
-                 e2.x = e1.x + mu * (e2.x - e1.x);
-                 e2.z = e1.z + mu * (e2.z - e1.z);
-                 e2.y = camera.back;
+             if ( e1.y < camera.back) then
+                 e2.x = e1.x + mu * ( e2.x - e1.x );
+                 e2.z = e1.z + mu * ( e2.z - e1.z );
+                 e2.y = self.camera.back;
              else
-                 e1.x = e1.x + mu * (e2.x - e1.x);
-                 e1.z = e1.z + mu * (e2.z - e1.z);
-                 e1.y = camera.back;
+                 e1.x = e1.x + mu * ( e2.x - e1.x );
+                 e1.z = e1.z + mu * ( e2.z - e1.z );
+                 e1.y = self.camera.back;
              end
          end
 
@@ -164,18 +167,18 @@ end
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function Trans_Eye2Norm( e,  n )
+function Projection:Trans_Eye2Norm( e,  n )
      local d;
 
-     if (camera.projection == 0) then
-         d = camera.zoom / e.y
-         n.x = d * e.x / tanthetah
+     if ( self.camera.projection == 0 ) then
+         d = self.camera.zoom / e.y
+         n.x = d * e.x / self.tanthetah
          n.y = e.y 
-         n.z = d * e.z / tanthetav
+         n.z = d * e.z / self.tanthetav
      else
-         n.x = camera.zoom * e.x / tanthetah;
+         n.x = self.camera.zoom * e.x / self.tanthetah;
          n.y = e.y;
-         n.z = camera.zoom * e.z / tanthetav;
+         n.z = self.camera.zoom * e.z / self.tanthetav;
      end
  end
 
@@ -185,77 +188,77 @@ function Trans_Eye2Norm( e,  n )
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function Trans_ClipNorm(  n1, n2 )
+function Projection:Trans_ClipNorm(  n1, n2 )
      local mu;
 
      -- Is the line segment totally right of x = 1 ? */
-     if (n1.x >= 1 and n2.x >= 1) then
+     if ( n1.x >= 1 and n2.x >= 1) then
          return  false;
      end
 
      -- Is the line segment totally left of x = -1 ? 
-     if (n1.x <= -1 and n2.x <= -1) then
+     if ( n1.x <= -1 and n2.x <= -1) then
          return  false;
     end
 
      -- Does the vector cross x = 1 ? 
-     if ((n1.x > 1 and n2.x < 1) or (n1.x < 1 and n2.x > 1)) then
-         mu = (1 - n1.x) / (n2.x - n1.x);
+     if (( n1.x > 1 and n2.x < 1) or ( n1.x < 1 and n2.x > 1)) then
+         mu = ( 1 - n1.x ) / ( n2.x - n1.x);
 
-         if (n1.x < 1) then
-             n2.z = n1.z + mu * (n2.z - n1.z);
+         if ( n1.x < 1) then
+             n2.z = n1.z + mu * ( n2.z - n1.z );
              n2.x = 1;
          else
-             n1.z = n1.z + mu * (n2.z - n1.z);
+             n1.z = n1.z + mu * ( n2.z - n1.z );
              n1.x = 1;
          end
      end
 
      -- Does the vector cross x = -1 ? 
-     if ((n1.x < -1 and n2.x > -1) or (n1.x > -1 and n2.x < -1)) then
-         mu = (-1 - n1.x) / (n2.x - n1.x);
+     if (( n1.x < -1 and n2.x > -1) or ( n1.x > -1 and n2.x < -1)) then
+         mu = ( -1 - n1.x ) / ( n2.x - n1.x );
 
-         if (n1.x > -1) then
-             n2.z = n1.z + mu * (n2.z - n1.z);
+         if ( n1.x > -1) then
+             n2.z = n1.z + mu * ( n2.z - n1.z );
              n2.x = -1;
          else
-             n1.z = n1.z + mu * (n2.z - n1.z);
+             n1.z = n1.z + mu * ( n2.z - n1.z );
              n1.x = -1;
          end
      end
 
      -- Is the line segment totally above z = 1 ? */
-     if (n1.z >= 1 and n2.z >= 1) then
+     if ( n1.z >= 1 and n2.z >= 1) then
          return  false;
      end
 
      -- Is the line segment totally below z = -1 ? */
-     if (n1.z <= -1 and n2.z <= -1) then
+     if ( n1.z <= -1 and n2.z <= -1) then
          return  false;
     end 
 
      -- Does the vector cross z = 1 ? */
-     if ((n1.z > 1 and n2.z < 1) or (n1.z < 1 and n2.z > 1)) then
-         mu = (1 - n1.z) / (n2.z - n1.z);
+     if (( n1.z > 1 and n2.z < 1) or ( n1.z < 1 and n2.z > 1 )) then
+         mu = (1 - n1.z ) / ( n2.z - n1.z );
          
-         if (n1.z < 1) then
-             n2.x = n1.x + mu * (n2.x - n1.x);
+         if ( n1.z < 1) then
+             n2.x = n1.x + mu * ( n2.x - n1.x );
              n2.z = 1;
          else
-             n1.x = n1.x + mu * (n2.x - n1.x);
+             n1.x = n1.x + mu * ( n2.x - n1.x );
              n1.z = 1;
          end
      end
 
      -- Does the vector cross z = -1 ? */
-     if ((n1.z < -1 and n2.z > -1) or (n1.z > -1 and n2.z < -1)) then
-         mu = (-1 - n1.z) / (n2.z - n1.z);
+     if (( n1.z < -1 and n2.z > -1) or ( n1.z > -1 and n2.z < -1)) then
+         mu = (-1 - n1.z ) / ( n2.z - n1.z );
 
-         if (n1.z > -1) then
-             n2.x = n1.x + mu * (n2.x - n1.x);
+         if ( n1.z > -1) then
+             n2.x = n1.x + mu * ( n2.x - n1.x);
              n2.z = -1;
          else
-             n1.x = n1.x + mu * (n2.x - n1.x);
+             n1.x = n1.x + mu * ( n2.x - n1.x);
              n1.z = -1;
          end
      end
@@ -269,10 +272,10 @@ function Trans_ClipNorm(  n1, n2 )
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function Trans_Norm2Screen( norm,  projected )
+function Projection:Trans_Norm2Screen( norm,  projected )
      --MessageBox.Show("the value of  are");
-     projected.h = Convert.ToInt32(screen.center.h - screen.size.h * norm.x / 2);
-     projected.v = Convert.ToInt32(screen.center.v - screen.size.v * norm.z / 2);
+     projected.h = self.screen.center.h - ( self.screen.size.h * norm.x / 2 );
+     projected.v = self.screen.center.v - ( self.screen.size.v * norm.z / 2 );
  end
 
 
@@ -282,17 +285,17 @@ function Trans_Norm2Screen( norm,  projected )
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function Trans_Line( w1,  w2 )
-     Trans_World2Eye(w1, e1);
-     Trans_World2Eye(w2, e2);
+function Projection:Trans_Line( w1,  w2 )
+     self:Trans_World2Eye(w1, self.e1);
+     self:Trans_World2Eye(w2, self.e2);
 
-     if Trans_ClipEye(e1, e2) then
-         Trans_Eye2Norm(e1, n1);
-         Trans_Eye2Norm(e2, n2);
+     if self:Trans_ClipEye(self.e1, self.e2) then
+         self:Trans_Eye2Norm(self.e1, n1);
+         self:Trans_Eye2Norm(self.e2, n2);
 
-         if  Trans_ClipNorm(n1, n2) then
-             Trans_Norm2Screen(n1, p1);
-             Trans_Norm2Screen(n2, p2);
+         if  self:Trans_ClipNorm( self.n1, self.n2 ) then
+             self:Trans_Norm2Screen( self.n1, self.p1 );
+             self:Trans_Norm2Screen( self.n2, self.p2 );
              return true;
          end
      end
@@ -305,7 +308,7 @@ function Trans_Line( w1,  w2 )
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function Normalise( v )
+function Projection:Normalise( v )
      local length;
 
      length = math.sqrt (v.x * v.x + v.y * v.y + v.z * v.z)
@@ -319,7 +322,7 @@ function Normalise( v )
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function CrossProduct( p1, p2)
+function Projection:CrossProduct( p1, p2)
      local p3;
      p3 = point3D:new(0,0,0);
 
@@ -335,7 +338,7 @@ function CrossProduct( p1, p2)
 
     @return - true or false depending on if initialisation has been successful.
     ]]
-function EqualVertex( p1,  p2 )
+function Projection:EqualVertex( p1,  p2 )
     if ( math.abs( p1.x - p2.x ) > EPSILON ) then
         return false
     end

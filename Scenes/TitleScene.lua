@@ -5,6 +5,7 @@ local widget = require("widget")
 local levelSprites = require("levelSprites")
 local scene = storyboard.newScene()
 
+local point3D = require("Projection.Point3D")
 local projection = require("Projection.Projection")
 
 -- file locations
@@ -96,7 +97,7 @@ function scene:willEnterScene( event )
     
     spriteSheet = graphics.newImageSheet( "levelSprites.png", levelSprites:getSheet() )
     
-   --[[] playButton = widget.newButton
+   --[[ playButton = widget.newButton
                             {
                                 sheet = spriteSheet,
                                 left = math.abs( display.viewableContentWidth / 2 ),
@@ -134,7 +135,14 @@ function scene:willEnterScene( event )
     --group:insert( exitButton )]]
 
     local proj = projection:new()
+    local w1 = point3D:new( nil, { x = 100, y = 100, z = 5 } )
+    local w2 = point3D:new( nil, { x = 100, y = 100, z = 4 } )
     
+    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z )
+    
+    proj:Trans_Line(w1, w2)
+    
+     print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
 end
 
 
