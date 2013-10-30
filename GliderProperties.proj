@@ -6,6 +6,14 @@
       "corona" : {
         "panelStorage" : {
         }
+      },
+      "moai" : {
+        "panelStorage" : {
+        }
+      },
+      "lua" : {
+        "panelStorage" : {
+        }
       }
     },
     "autolibs" : [ ],

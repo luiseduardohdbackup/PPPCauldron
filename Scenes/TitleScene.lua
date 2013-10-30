@@ -57,16 +57,6 @@ end
 function scene:createScene( event )
     local group = self.view
     
-    -- 1. Create rendering layers (group)
-    --local background = display.newImage( Images .. "titleBackground.png" )
-    --local title = display.newImageRect(  Images .. "title.png", 200, 200 )
-    
-    -- Center the title on the screen
-   -- title.x = centerX - ( title.width / 2 ) 
-    --title.y = -210
-    
-    --group:insert( background )
-    --group:insert( title )
 end
 
 -- Called BEFORE scene has moved onscreen:
@@ -96,53 +86,27 @@ function scene:willEnterScene( event )
     end
     
     spriteSheet = graphics.newImageSheet( "levelSprites.png", levelSprites:getSheet() )
-    
-   --[[ playButton = widget.newButton
-                            {
-                                sheet = spriteSheet,
-                                left = math.abs( display.viewableContentWidth / 2 ),
-                                top = math.abs( display.viewableContentHeight * 0.2) * 1, 
-                                defaultFrame = levelSprites:getFrameIndex("background"),
-                                overFrame = levelSprites:getFrameIndex("background"),
-                                width = math.abs( display.contentWidth * 0.5 ),
-                                height = math.abs( display.viewableContentHeight * 0.2 )
-                            }
-                            
-    infoButton = widget.newButton
-                            {
-                                sheet = spriteSheet,
-                                left = math.abs( display.viewableContentWidth / 2 ),
-                                top = math.abs( display.viewableContentHeight * 0.2) * 2, 
-                                defaultFrame = levelSprites:getFrameIndex("background"),
-                                overFrame = levelSprites:getFrameIndex("background"),
-                                width = math.abs( display.contentWidth * 0.5 ),
-                                height = math.abs( display.viewableContentHeight * 0.2 )
-                            }
-                            
-    exitButton = widget.newButton
-                            {
-                                sheet = spriteSheet,
-                                left = math.abs( display.viewableContentWidth / 2 ),
-                                top = math.abs( display.viewableContentHeight * 0.2) * 3, 
-                                defaultFrame = levelSprites:getFrameIndex("background"),
-                                overFrame = levelSprites:getFrameIndex("background"),
-                                width = math.abs( display.contentWidth * 0.5 ),
-                                height = math.abs( display.viewableContentHeight * 0.2 )
-                            }
-                   
-    --group:insert ( playButton )
-    --group:insert( infoButton )
-    --group:insert( exitButton )]]
 
     local proj = projection:new()
+    
     local w1 = point3D:new( nil, { x = 100, y = 100, z = 5 } )
     local w2 = point3D:new( nil, { x = 100, y = 100, z = 4 } )
     
-    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z )
-    
+    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z ) 
     proj:Trans_Line(w1, w2)
+    print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
     
-     print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
+    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z ) 
+    proj:Trans_Line(w1, w2)
+    print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
+    
+    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z ) 
+    proj:Trans_Line(w1, w2)
+    print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
+    
+    print( "W1 is " .. w1.x .. " " .. w1.y .. " " .. w1.z ) 
+    proj:Trans_Line(w1, w2)
+    print( "W1 is now " .. w1.x .. " " .. w1.y .. " " .. w1.z )
 end
 
 
